@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+        }
+        .meta-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .section {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #007bff;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        .metric-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .metric-value {
+            color: #333;
+        }
+        .chart-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+        .trend-neutral {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{title}}</h1>
+    </div>
+
+    <div class="meta-info">
+        <p>Generated on: {{generatedAt}}</p>
+        <p>Period: {{period}}</p>
+    </div>
+
+    {{#if analytics}}
+    <div class="stats-grid">
+        {{#if analytics.totalUsers}}
+        <div class="stat-card">
+            <div class="stat-number">{{formatNumber analytics.totalUsers}}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        {{/if}}
+        {{#if analytics.activeUsers}}
+        <div class="stat-card">
+            <div class="stat-number">{{formatNumber analytics.activeUsers}}</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+        {{/if}}
+        {{#if analytics.totalListings}}
+        <div class="stat-card">
+            <div class="stat-number">{{formatNumber analytics.totalListings}}</div>
+            <div class="stat-label">Total Listings</div>
+        </div>
+        {{/if}}
+        {{#if analytics.activeListings}}
+        <div class="stat-card">
+            <div class="stat-number">{{formatNumber analytics.activeListings}}</div>
+            <div class="stat-label">Active Listings</div>
+        </div>
+        {{/if}}
+        {{#if analytics.totalRevenue}}
+        <div class="stat-card">
+            <div class="stat-number">{{formatCurrency analytics.totalRevenue}}</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+        {{/if}}
+        {{#if analytics.totalTransactions}}
+        <div class="stat-card">
+            <div class="stat-number">{{formatNumber analytics.totalTransactions}}</div>
+            <div class="stat-label">Transactions</div>
+        </div>
+        {{/if}}
+    </div>
+
+    <div class="section">
+        <h3>User Analytics</h3>
+        {{#if analytics.newUsers}}
+        <div class="metric-row">
+            <span class="metric-label">New Users:</span>
+            <span class="metric-value">{{formatNumber analytics.newUsers}}</span>
+        </div>
+        {{/if}}
+        {{#if analytics.userGrowthRate}}
+        <div class="metric-row">
+            <span class="metric-label">Growth Rate:</span>
+            <span class="metric-value {{#if (gt analytics.userGrowthRate 0)}}trend-up{{else}}{{#if (lt analytics.userGrowthRate 0)}}trend-down{{else}}trend-neutral{{/if}}{{/if}}">
+                {{analytics.userGrowthRate}}%
+            </span>
+        </div>
+        {{/if}}
+        {{#if analytics.averageSessionDuration}}
+        <div class="metric-row">
+            <span class="metric-label">Avg. Session Duration:</span>
+            <span class="metric-value">{{analytics.averageSessionDuration}} minutes</span>
+        </div>
+        {{/if}}
+        {{#if analytics.userRetentionRate}}
+        <div class="metric-row">
+            <span class="metric-label">Retention Rate:</span>
+            <span class="metric-value">{{analytics.userRetentionRate}}%</span>
+        </div>
+        {{/if}}
+    </div>
+
+    <div class="section">
+        <h3>Listing Analytics</h3>
+        {{#if analytics.newListings}}
+        <div class="metric-row">
+            <span class="metric-label">New Listings:</span>
+            <span class="metric-value">{{formatNumber analytics.newListings}}</span>
+        </div>
+        {{/if}}
+        {{#if analytics.listingGrowthRate}}
+        <div class="metric-row">
+            <span class="metric-label">Growth Rate:</span>
+            <span class="metric-value {{#if (gt analytics.listingGrowthRate 0)}}trend-up{{else}}{{#if (lt analytics.listingGrowthRate 0)}}trend-down{{else}}trend-neutral{{/if}}{{/if}}">
+                {{analytics.listingGrowthRate}}%
+            </span>
+        </div>
+        {{/if}}
+        {{#if analytics.averageListingPrice}}
+        <div class="metric-row">
+            <span class="metric-label">Average Price:</span>
+            <span class="metric-value">{{formatCurrency analytics.averageListingPrice}}</span>
+        </div>
+        {{/if}}
+        {{#if analytics.listingConversionRate}}
+        <div class="metric-row">
+            <span class="metric-label">Conversion Rate:</span>
+            <span class="metric-value">{{analytics.listingConversionRate}}%</span>
+        </div>
+        {{/if}}
+    </div>
+
+    {{#if analytics.topCategories}}
+    <div class="section">
+        <h3>Top Categories</h3>
+        {{#each analytics.topCategories}}
+        <div class="metric-row">
+            <span class="metric-label">{{this.name}}:</span>
+            <span class="metric-value">{{formatNumber this.count}} listings</span>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if analytics.revenueBreakdown}}
+    <div class="section">
+        <h3>Revenue Breakdown</h3>
+        {{#each analytics.revenueBreakdown}}
+        <div class="metric-row">
+            <span class="metric-label">{{this.source}}:</span>
+            <span class="metric-value">{{formatCurrency this.amount}}</span>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+    {{/if}}
+
+    <div class="footer">
+        <p>LinkBzaar Analytics Report - Confidential</p>
+    </div>
+</body>
+</html>
